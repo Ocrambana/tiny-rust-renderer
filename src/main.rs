@@ -23,25 +23,27 @@ fn draw_line(ax :usize, ay:usize, bx:usize, by:usize,color : &TGAColor, image :&
         (ax,ay,bx,by)
     };
     
-    // let mut y = ay;
+    let mut y: f64 = ay as f64;
+    let mut ierr : isize = 0;
     for x in ax..=bx  
     {
-        let t = (x - ax) as f64 / (bx-ax) as f64;
-        let y = (ay as f64 + ((by - ay) as f64  * t)) as usize;
         if steep
         {
             image.set(
-            y,
-            x,
-            color);
+                y as usize,
+                x,
+                color);
         }
         else 
         {
             image.set(
-            x,
-            y,
-            color);
+                x,
+                y as usize,
+                color);
         };
+        ierr = ierr + 2 * by.abs_diff(ay) as isize;
+        y = y + ((if by > ay {1isize} else {-1isize}) * ((ierr > (bx - ax) as isize)) as isize) as f64;
+        ierr = ierr - 2 * (bx-ax) as isize * ((ierr > (bx - ax) as isize)) as isize;
         
     }
 }
